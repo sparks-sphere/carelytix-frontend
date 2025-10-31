@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -21,7 +21,7 @@ import {
   Plus,
   ChevronLeft,
   ChevronRight,
-  CircleX
+  CircleX,
 } from 'lucide-react';
 import {
   Select,
@@ -39,7 +39,7 @@ interface Billing {
   bookingSlot: string;
   services: string;
 }
-import CreateBillModal from "./CreateBillModal";
+import CreateBillModal from './CreateBillModal';
 
 const allBillings: Billing[] = [
   {
@@ -48,7 +48,7 @@ const allBillings: Billing[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    services:'Haircut,Spa,...'
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -56,7 +56,7 @@ const allBillings: Billing[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    services:'Haircut,Spa,...'
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -64,7 +64,7 @@ const allBillings: Billing[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    services:'Haircut,Spa,...'
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -72,7 +72,7 @@ const allBillings: Billing[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    services:'Haircut,Spa,...'
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -80,7 +80,7 @@ const allBillings: Billing[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    services:'Haircut,Spa,...'
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -88,7 +88,7 @@ const allBillings: Billing[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    services:'Haircut,Spa,...'
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -96,7 +96,7 @@ const allBillings: Billing[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    services:'Haircut,Spa,...'
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -104,7 +104,7 @@ const allBillings: Billing[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    services:'Haircut,Spa,...'
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -112,7 +112,7 @@ const allBillings: Billing[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    services:'Haircut,Spa,...'
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -120,78 +120,81 @@ const allBillings: Billing[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    services:'Haircut,Spa,...'
+    services: 'Haircut,Spa,...',
   },
 ];
 
 export default function BillingPage() {
   const [showModal, setShowModal] = useState(false);
-  const [billing,setBilling]=useState(allBillings)
+  const [billing, setBilling] = useState(allBillings);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(2);
   const [searchTerm, setSearchTerm] = useState('');
-   
-    const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-     const [newBilling, setNewBilling] = useState({
+
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [newBilling, setNewBilling] = useState({
+    bookingId: '',
+    customerName: '',
+    dateOfBooking: '',
+    bookingSlot: '',
+    services: '',
+  });
+
+  const handleSaveNew = () => {
+    const nextSlNo = (
+      billing.length > 0
+        ? Math.max(...billing.map((B) => Number(B.SlNo))) + 1
+        : 1
+    ).toString();
+    setBilling([...billing, { ...newBilling, SlNo: nextSlNo }]);
+    setNewBilling({
       bookingId: '',
       customerName: '',
       dateOfBooking: '',
       bookingSlot: '',
       services: '',
     });
-  
-     const handleSaveNew = () => {
-      const id: string = (Math.max(...billing.map(B => Number(B))) + 1).toString();
-  
-      setBilling([...billing, { ...newBilling, }]);
-   
-     
-  
-      setNewBilling({ bookingId: '', customerName: '', dateOfBooking: '', bookingSlot: '' ,services:''});
-     
-      setIsAddDialogOpen(false);
-    };
-  
-    const handleAdd = () => {
-      setIsAddDialogOpen(true);
-    };
-  
-  
-  
-    const filteredBillings = allBillings.filter((billing) =>
-      billing.bookingId.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-  
-    const totalPages = Math.ceil(filteredBillings.length / rowsPerPage);
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    const currentBilling = filteredBillings.slice(startIndex, endIndex);
-  
-    const handlePageChange = (page: number) => {
-      if (page >= 1 && page <= totalPages) setCurrentPage(page);
-    };
-  
-    const generatePageNumbers = (): number[] => {
-      const pages: number[] = [];
-      const maxVisiblePages = 3;
-  
-      if (totalPages <= maxVisiblePages) {
-        for (let i = 1; i <= totalPages; i++) pages.push(i);
+    setIsAddDialogOpen(false);
+  };
+
+  const handleAdd = () => {
+    setIsAddDialogOpen(true);
+  };
+
+  const filteredBillings = allBillings.filter((billing) =>
+    billing.bookingId.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const totalPages = Math.ceil(filteredBillings.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const currentBilling = filteredBillings.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
+  const generatePageNumbers = (): number[] => {
+    const pages: number[] = [];
+    const maxVisiblePages = 3;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      if (currentPage <= 2) {
+        for (let i = 1; i <= Math.min(3, totalPages); i++) pages.push(i);
+      } else if (currentPage >= totalPages - 1) {
+        for (let i = Math.max(totalPages - 2, 1); i <= totalPages; i++)
+          pages.push(i);
       } else {
-        if (currentPage <= 2) {
-          for (let i = 1; i <= Math.min(3, totalPages); i++) pages.push(i);
-        } else if (currentPage >= totalPages - 1) {
-          for (let i = Math.max(totalPages - 2, 1); i <= totalPages; i++)
-            pages.push(i);
-        } else {
-          for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
-        }
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
       }
-      return pages;
-    };
+    }
+    return pages;
+  };
 
   return (
-      <Card className="bg-white rounded-lg border border-gray-200 shadow-sm">
+    <Card className="bg-white rounded-lg border border-gray-200 shadow-sm">
       <CardContent className="p-6">
         <div className="flex flex-col mb-6">
           <h3 className="text-xl font-semibold text-gray-900">Booking</h3>
@@ -209,8 +212,9 @@ export default function BillingPage() {
               />
             </div>
             <Button
-             onClick={handleAdd}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2">
+              onClick={handleAdd}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
+            >
               <Plus className="mr-2 h-4 w-4" />
               Add Booking
             </Button>
@@ -236,10 +240,10 @@ export default function BillingPage() {
                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
                   Booking Slot
                 </TableHead>
-                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
+                <TableHead className="text-gray-700 font-semibold px-6 py-4">
                   Booking Status
                 </TableHead>
-                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
+                <TableHead className="text-gray-700 font-semibold px-6 py-4">
                   Service
                 </TableHead>
                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
@@ -250,7 +254,7 @@ export default function BillingPage() {
             <TableBody>
               {currentBilling.map((billing, index) => (
                 <TableRow
-                  key={billing.id}
+                  key={billing.SlNo}
                   className="hover:bg-gray-50 border-b border-gray-100"
                 >
                   <TableCell className="px-6 py-4 text-gray-600">
@@ -268,7 +272,7 @@ export default function BillingPage() {
                   <TableCell className="px-6 py-4 text-gray-600">
                     {billing.bookingSlot}
                   </TableCell>
-                   <TableCell className="px-6 py-4 text-gray-600">
+                  <TableCell className="px-6 py-4 text-gray-600">
                     {billing.services}
                   </TableCell>
                   <TableCell className="px-6 py-4">
@@ -350,9 +354,11 @@ export default function BillingPage() {
             </Button>
           </div>
         </div>
-        <CreateBillModal isOpen={showModal} onClose={() => setShowModal(false)} />
-        </CardContent>
+        <CreateBillModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+        />
+      </CardContent>
     </Card>
   );
-};
-
+}

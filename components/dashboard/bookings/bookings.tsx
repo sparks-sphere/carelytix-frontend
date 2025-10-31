@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog,DialogContent,DialogHeader, DialogTitle } from "../../Dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../Dialog';
 import {
   MoreHorizontal,
   MoreVertical,
@@ -20,7 +20,7 @@ import {
   Plus,
   ChevronLeft,
   ChevronRight,
-  CircleX
+  CircleX,
 } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -48,8 +48,8 @@ const allBookings: Booking[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    bookingStatus:'Completed',
-    services:'Haircut,Spa,...'
+    bookingStatus: 'Completed',
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -57,8 +57,8 @@ const allBookings: Booking[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    bookingStatus:'Completed',
-    services:'Haircut,Spa,...'
+    bookingStatus: 'Completed',
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -66,8 +66,8 @@ const allBookings: Booking[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    bookingStatus:'Completed',
-    services:'Haircut,Spa,...'
+    bookingStatus: 'Completed',
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -75,8 +75,8 @@ const allBookings: Booking[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    bookingStatus:'Completed',
-    services:'Haircut,Spa,...'
+    bookingStatus: 'Completed',
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -84,8 +84,8 @@ const allBookings: Booking[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    bookingStatus:'Completed',
-    services:'Haircut,Spa,...'
+    bookingStatus: 'Completed',
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -93,8 +93,8 @@ const allBookings: Booking[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    bookingStatus:'Completed',
-    services:'Haircut,Spa,...'
+    bookingStatus: 'Completed',
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -102,8 +102,8 @@ const allBookings: Booking[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    bookingStatus:'Completed',
-    services:'Haircut,Spa,...'
+    bookingStatus: 'Completed',
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -111,8 +111,8 @@ const allBookings: Booking[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    bookingStatus:'Completed',
-    services:'Haircut,Spa,...'
+    bookingStatus: 'Completed',
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -120,8 +120,8 @@ const allBookings: Booking[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    bookingStatus:'Completed',
-    services:'Haircut,Spa,...'
+    bookingStatus: 'Completed',
+    services: 'Haircut,Spa,...',
   },
   {
     SlNo: '1',
@@ -129,44 +129,51 @@ const allBookings: Booking[] = [
     customerName: 'xxxxxxx xxxxxxx',
     dateOfBooking: 'DD/MM/YY',
     bookingSlot: '03:00 PM',
-    bookingStatus:'Completed',
-    services:'Haircut,Spa,...'
+    bookingStatus: 'Completed',
+    services: 'Haircut,Spa,...',
   },
 ];
 
 export default function BookingsTable() {
-  const [booking,setBooking]=useState(allBookings)
+  const [booking, setBooking] = useState(allBookings);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(2);
   const [searchTerm, setSearchTerm] = useState('');
- 
+
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-   const [newBooking, setNewBooking] = useState({
+  const [newBooking, setNewBooking] = useState({
     bookingId: '',
     customerName: '',
     dateOfBooking: '',
     bookingSlot: '',
-    bookingStatus:'',
+    bookingStatus: '',
     services: '',
   });
 
-   const handleSaveNew = () => {
-    const id: string = (Math.max(...booking.map(B => Number(B))) + 1).toString();
+  const handleSaveNew = () => {
+    const nextSlNo = (
+      booking.length > 0
+        ? Math.max(...booking.map((B) => Number(B.SlNo))) + 1
+        : 1
+    ).toString();
 
-    setBooking([...booking, { ...newBooking, }]);
- 
-   
+    setBooking([...booking, { ...newBooking, SlNo: nextSlNo }]);
 
-    setNewBooking({ bookingId: '', customerName: '', dateOfBooking: '', bookingSlot: '' ,bookingStatus:'',services:''});
-   
+    setNewBooking({
+      bookingId: '',
+      customerName: '',
+      dateOfBooking: '',
+      bookingSlot: '',
+      bookingStatus: '',
+      services: '',
+    });
+
     setIsAddDialogOpen(false);
   };
 
   const handleAdd = () => {
     setIsAddDialogOpen(true);
   };
-
-
 
   const filteredServices = allBookings.filter((booking) =>
     booking.bookingId.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -219,8 +226,9 @@ export default function BookingsTable() {
               />
             </div>
             <Button
-             onClick={handleAdd}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2">
+              onClick={handleAdd}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
+            >
               <Plus className="mr-2 h-4 w-4" />
               Add Booking
             </Button>
@@ -246,10 +254,10 @@ export default function BookingsTable() {
                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
                   Booking Slot
                 </TableHead>
-                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
+                <TableHead className="text-gray-700 font-semibold px-6 py-4">
                   Booking Status
                 </TableHead>
-                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
+                <TableHead className="text-gray-700 font-semibold px-6 py-4">
                   Service
                 </TableHead>
                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
@@ -260,7 +268,7 @@ export default function BookingsTable() {
             <TableBody>
               {currentBooking.map((booking, index) => (
                 <TableRow
-                  key={booking.id}
+                  key={booking.SlNo}
                   className="hover:bg-gray-50 border-b border-gray-100"
                 >
                   <TableCell className="px-6 py-4 text-gray-600">
@@ -278,10 +286,10 @@ export default function BookingsTable() {
                   <TableCell className="px-6 py-4 text-gray-600">
                     {booking.bookingSlot}
                   </TableCell>
-                   <TableCell className="px-6 py-4 text-gray-600">
+                  <TableCell className="px-6 py-4 text-gray-600">
                     {booking.bookingStatus}
                   </TableCell>
-                   <TableCell className="px-6 py-4 text-gray-600">
+                  <TableCell className="px-6 py-4 text-gray-600">
                     {booking.services}
                   </TableCell>
                   <TableCell className="px-6 py-4">
@@ -364,114 +372,125 @@ export default function BookingsTable() {
           </div>
         </div>
 
-        < Dialog  open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                        <DialogContent >
-                          <DialogHeader>
-                            <DialogTitle
-                           
-                            >Create Booking</DialogTitle>
-                            
-                             <CircleX 
-                             onClick={() => setIsAddDialogOpen(false)}
-                             className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                             />
-                            
-                          </DialogHeader>
-                
-                
-                          <div className="space-y-6 p-6">
-                            <div className="grid grid-cols-3 gap-4">
-                
-                            <div className='space-y-2'>
-                              <Label 
-                              className="text-sm font-medium text-gray-700"
-                              htmlFor="Branch-code">Customer Name</Label>
-                               <select className="w-full border rounded px-2 py-1">
-                                      <option>Type and select Customer name</option>
-                                 </select>
-                              <Input className='hidden'
-                                id="Branch-code"
-                                value={newBooking.customerName}
-                                onChange={(e) =>
-                                  setNewBooking({ ...newBooking, customerName: e.target.value })
-                                }
-                                />
-                            </div>
-                            <div className='space-y-2'>
-                              <Label 
-                              className="text-sm font-medium text-gray-700"
-                              htmlFor="Branch-Manager">Date Of Booking</Label>
-                              <input
-                                  type="date"
-                                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-200"/>
-                            </div>
-                          </div>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create Booking</DialogTitle>
 
-                          <div className="grid grid-cols-2 gap-4">
-                              <div className='space-y-2'>
-                              <Label htmlFor="contact-number">Booking Slot</Label>
-                               <select className="w-full border rounded px-2 py-1">
-                                      <option>Select slot</option>
-                                 </select>
-                              <Input className='hidden'
-                                id="contact-number"
-                                value={newBooking.bookingSlot}
-                                onChange={(e) =>
-                                  
-                                 setNewBooking({ ...newBooking, bookingSlot: e.target.value })
-                                }
-                              />
-                            </div>
-                            <div className='space-y-2'>
-                              <Label htmlFor="contact-number">Booking Status</Label>
-                               <select className="w-full border rounded px-2 py-1">
-                                    <option>Select status</option>
-                                  </select>
-                              <Input className='hidden'
-                                id="contact-number"
-                                value={newBooking.bookingStatus}
-                                onChange={(e) =>
-                                  
-                                 setNewBooking({ ...newBooking, bookingStatus: e.target.value })
-                                }
-                              />
-                            </div>
-                          </div>
+              <CircleX
+                onClick={() => setIsAddDialogOpen(false)}
+                className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              />
+            </DialogHeader>
 
-                          <div className='space-y-2'>
-                              <Label htmlFor="price"> Services</Label>
-                               <select className="w-full border rounded px-2 py-1">
-                                    <option>Select state</option>
-                                </select>
-                              <Input className='hidden'
-                                id="price"
-                                value={newBooking.services}
-                                onChange={(e) =>
-                                  
-                                 setNewBooking({ ...newBooking, services: e.target.value })
-                                }
-                              />
-                            </div>
-                            
-                
-                            <div className='h-14'>
-                
-                            </div>
-                            <div className="flex justify-end space-x-2 border-t-2 pt-4">
-                              <Button
-                                variant="outline"
-                                onClick={() => setIsAddDialogOpen(false)}
-                              >
-                                Cancel
-                              </Button>
-                              <Button 
-                              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
-                              onClick={handleSaveNew}>Save</Button>
-                            </div>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-        
+            <div className="space-y-6 p-6">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="Branch-code"
+                  >
+                    Customer Name
+                  </Label>
+                  <select className="w-full border rounded px-2 py-1">
+                    <option>Type and select Customer name</option>
+                  </select>
+                  <Input
+                    className="hidden"
+                    id="Branch-code"
+                    value={newBooking.customerName}
+                    onChange={(e) =>
+                      setNewBooking({
+                        ...newBooking,
+                        customerName: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="Branch-Manager"
+                  >
+                    Date Of Booking
+                  </Label>
+                  <input
+                    type="date"
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-200"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="contact-number">Booking Slot</Label>
+                  <select className="w-full border rounded px-2 py-1">
+                    <option>Select slot</option>
+                  </select>
+                  <Input
+                    className="hidden"
+                    id="contact-number"
+                    value={newBooking.bookingSlot}
+                    onChange={(e) =>
+                      setNewBooking({
+                        ...newBooking,
+                        bookingSlot: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="contact-number">Booking Status</Label>
+                  <select className="w-full border rounded px-2 py-1">
+                    <option>Select status</option>
+                  </select>
+                  <Input
+                    className="hidden"
+                    id="contact-number"
+                    value={newBooking.bookingStatus}
+                    onChange={(e) =>
+                      setNewBooking({
+                        ...newBooking,
+                        bookingStatus: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="price"> Services</Label>
+                <select className="w-full border rounded px-2 py-1">
+                  <option>Select state</option>
+                </select>
+                <Input
+                  className="hidden"
+                  id="price"
+                  value={newBooking.services}
+                  onChange={(e) =>
+                    setNewBooking({ ...newBooking, services: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="h-14"></div>
+              <div className="flex justify-end space-x-2 border-t-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
+                  onClick={handleSaveNew}
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );

@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog,DialogContent,DialogHeader, DialogTitle } from "../../Dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../Dialog';
 import {
   MoreHorizontal,
   MoreVertical,
@@ -20,7 +20,7 @@ import {
   Plus,
   ChevronLeft,
   ChevronRight,
-  CircleX
+  CircleX,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,8 +35,21 @@ import { Description } from '@radix-ui/react-toast';
 import Datepicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { type RootState, type AppDispatch } from '@/state/store';
-import { fetchStaffs, createStaff, createStaffSuccess, updateStaff, updateStaffSuccess, deleteStaff, deleteStaffSuccess } from '@/state/staff/staff-slice';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  fetchStaffs,
+  createStaff,
+  createStaffSuccess,
+  updateStaff,
+  updateStaffSuccess,
+  deleteStaff,
+  deleteStaffSuccess,
+} from '@/state/staff/staff-slice';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface Service {
   id: string;
@@ -54,112 +67,112 @@ const allServices: Service[] = [
   {
     id: '01',
     Employee_Name: 'xxxxxxxx xxxxx',
-    First_Name:'',
+    First_Name: '',
     Last_Name: '',
     Job_Title: 'xxxxxxxxxx',
     Job_Role: 'xxxxxxxxxxx',
     branch: 'xxxxxxxxxx',
     Date: 'DD/MM/YYYY',
-    contact: 1234567890
+    contact: 1234567890,
   },
   {
     id: '01',
     Employee_Name: 'xxxxxxxx xxxxx',
-    First_Name:'',
+    First_Name: '',
     Last_Name: '',
     Job_Title: 'xxxxxxxxxx',
     Job_Role: 'xxxxxxxxxxx',
     branch: 'xxxxxxxxxx',
     Date: 'DD/MM/YYYY',
-    contact: 1234567890
+    contact: 1234567890,
   },
   {
     id: '01',
     Employee_Name: 'xxxxxxxx xxxxx',
-    First_Name:'',
+    First_Name: '',
     Last_Name: '',
     Job_Title: 'xxxxxxxxxx',
     Job_Role: 'xxxxxxxxxxx',
     branch: 'xxxxxxxxxx',
     Date: 'DD/MM/YYYY',
-    contact: 1234567890
+    contact: 1234567890,
   },
   {
     id: '01',
     Employee_Name: 'xxxxxxxx xxxxx',
-    First_Name:'',
+    First_Name: '',
     Last_Name: '',
     Job_Title: 'xxxxxxxxxx',
     Job_Role: 'xxxxxxxxxxx',
     branch: 'xxxxxxxxxx',
     Date: 'DD/MM/YYYY',
-    contact: 1234567890
+    contact: 1234567890,
   },
   {
     id: '01',
     Employee_Name: 'xxxxxxxx xxxxx',
-    First_Name:'',
+    First_Name: '',
     Last_Name: '',
     Job_Title: 'xxxxxxxxxx',
     Job_Role: 'xxxxxxxxxxx',
     branch: 'xxxxxxxxxx',
     Date: 'DD/MM/YYYY',
-    contact: 1234567890
+    contact: 1234567890,
   },
   {
     id: '01',
     Employee_Name: 'xxxxxxxx xxxxx',
-    First_Name:'',
+    First_Name: '',
     Last_Name: '',
     Job_Title: 'xxxxxxxxxx',
     Job_Role: 'xxxxxxxxxxx',
     branch: 'xxxxxxxxxx',
     Date: 'DD/MM/YYYY',
-    contact: 1234567890
+    contact: 1234567890,
   },
   {
     id: '01',
     Employee_Name: 'xxxxxxxx xxxxx',
-    First_Name:'',
+    First_Name: '',
     Last_Name: '',
     Job_Title: 'xxxxxxxxxx',
     Job_Role: 'xxxxxxxxxxx',
     branch: 'xxxxxxxxxx',
     Date: 'DD/MM/YYYY',
-    contact: 1234567890
+    contact: 1234567890,
   },
   {
     id: '01',
     Employee_Name: 'xxxxxxxx xxxxx',
-    First_Name:'',
+    First_Name: '',
     Last_Name: '',
     Job_Title: 'xxxxxxxxxx',
     Job_Role: 'xxxxxxxxxxx',
     branch: 'xxxxxxxxxx',
     Date: 'DD/MM/YYYY',
-    contact: 1234567890
+    contact: 1234567890,
   },
   {
     id: '01',
     Employee_Name: 'xxxxxxxx xxxxx',
-    First_Name:'',
+    First_Name: '',
     Last_Name: '',
     Job_Title: 'xxxxxxxxxx',
     Job_Role: 'xxxxxxxxxxx',
     branch: 'xxxxxxxxxx',
     Date: 'DD/MM/YYYY',
-    contact: 1234567890
+    contact: 1234567890,
   },
   {
     id: '01',
     Employee_Name: 'xxxxxxxx xxxxx',
-    First_Name:'',
+    First_Name: '',
     Last_Name: '',
     Job_Title: 'xxxxxxxxxx',
     Job_Role: 'xxxxxxxxxxx',
     branch: 'xxxxxxxxxx',
     Date: 'DD/MM/YYYY',
-    contact: 1234567890
+    contact: 1234567890,
   },
 ];
 
@@ -169,12 +182,12 @@ export default function StaffSettingsTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(2);
   const [searchTerm, setSearchTerm] = useState('');
- 
+
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   // Edit dialog open state and currently editing staff
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<any | null>(null);
-   const [newService, setNewService] = useState({
+  const [newService, setNewService] = useState({
     Employee_Name: '',
     First_Name: '',
     Last_Name: '',
@@ -186,26 +199,41 @@ export default function StaffSettingsTable() {
     address: '',
     state: '',
     city: '',
-    pin: ''
+    pin: '',
   });
 
   useEffect(() => {
     dispatch(fetchStaffs());
   }, [dispatch]);
 
-   const handleSaveNew = () => {
+  const handleSaveNew = () => {
     const maxId = Math.max(0, ...staffs.map((s: any) => Number(s?.id) || 0));
     const newId = String(maxId + 1);
     const payload = {
       ...newService,
       id: newId,
-      Employee_Name: newService.Employee_Name || `${newService.First_Name} ${newService.Last_Name}`.trim(),
+      Employee_Name:
+        newService.Employee_Name ||
+        `${newService.First_Name} ${newService.Last_Name}`.trim(),
     };
     // Optimistic UI add so it reflects immediately
     dispatch(createStaffSuccess(payload as any));
     // Trigger saga/API with expected payload shape { data }
     dispatch(createStaff({ data: payload } as any));
-    setNewService({ Employee_Name: '', First_Name: '', Last_Name: '' ,Job_Title: '', Job_Role:'', branch: '', Date: '' ,contact: '', address: '', state: '', city: '', pin: ''});
+    setNewService({
+      Employee_Name: '',
+      First_Name: '',
+      Last_Name: '',
+      Job_Title: '',
+      Job_Role: '',
+      branch: '',
+      Date: '',
+      contact: '',
+      address: '',
+      state: '',
+      city: '',
+      pin: '',
+    });
     setIsAddDialogOpen(false);
   };
 
@@ -224,7 +252,9 @@ export default function StaffSettingsTable() {
     if (!editingStaff) return;
     const payload = {
       ...editingStaff,
-      Employee_Name: editingStaff.Employee_Name || `${editingStaff.First_Name ?? ''} ${editingStaff.Last_Name ?? ''}`.trim(),
+      Employee_Name:
+        editingStaff.Employee_Name ||
+        `${editingStaff.First_Name ?? ''} ${editingStaff.Last_Name ?? ''}`.trim(),
     };
     // Optimistic UI update so changes reflect immediately
     dispatch(updateStaffSuccess(payload as any));
@@ -244,8 +274,6 @@ export default function StaffSettingsTable() {
     // Trigger saga/API with expected payload shape { id }
     dispatch(deleteStaff({ id } as any));
   };
-
-
 
   const filteredServices = (staffs || []).filter((service: any) => {
     const name = (
@@ -302,8 +330,9 @@ export default function StaffSettingsTable() {
               />
             </div>
             <Button
-             onClick={handleAdd}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2">
+              onClick={handleAdd}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
+            >
               <Plus className="mr-2 h-4 w-4" />
               Add Staff
             </Button>
@@ -332,10 +361,10 @@ export default function StaffSettingsTable() {
                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
                   Date of Joining
                 </TableHead>
-                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
+                <TableHead className="text-gray-700 font-semibold px-6 py-4">
                   Contact Number
                 </TableHead>
-                 {/* <TableHead className="text-gray-700 font-semibold px-6 py-4">
+                {/* <TableHead className="text-gray-700 font-semibold px-6 py-4">
                   Base Price
                 </TableHead> */}
                 <TableHead className="text-gray-700 font-semibold px-6 py-4">
@@ -367,10 +396,10 @@ export default function StaffSettingsTable() {
                   <TableCell className="px-6 py-4 text-gray-600">
                     {service.Date}
                   </TableCell>
-                   <TableCell className="px-6 py-4 text-gray-600">
+                  <TableCell className="px-6 py-4 text-gray-600">
                     {service.contact}
                   </TableCell>
-                   {/* <TableCell className="px-6 py-4 text-gray-600">
+                  {/* <TableCell className="px-6 py-4 text-gray-600">
                     {service.basePrice}
                   </TableCell> */}
                   <TableCell className="px-6 py-4">
@@ -388,7 +417,10 @@ export default function StaffSettingsTable() {
                         <DropdownMenuItem onClick={() => handleEdit(service)}>
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDelete(service.id)} className="text-red-600">
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(service.id)}
+                          className="text-red-600"
+                        >
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -423,7 +455,6 @@ export default function StaffSettingsTable() {
 
           <div className="flex items-center space-x-2">
             <Button
-            
               variant="ghost"
               size="sm"
               onClick={() => handlePageChange(currentPage - 1)}
@@ -468,220 +499,296 @@ export default function StaffSettingsTable() {
         </div>
 
         {/* Add Staff dialog */}
-        < Dialog  open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                        <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto rounded-lg p-0">
-                          <DialogHeader className="bg-purple-100 rounded-t-lg px-6 py-4 flex items-center justify-between">
-                            <DialogTitle className="text-lg font-semibold">Create Staff</DialogTitle>
-                             <CircleX onClick={() => setIsAddDialogOpen(false)} className="cursor-pointer" />
-                          </DialogHeader>
-                
-                
-                          <div className="space-y-6 p-6">
-                            <div className="grid grid-cols-3 gap-3">
-                
-                            <div className="space-y-2" >
-                              <Label
-                              className="text-sm font-medium text-gray-700"
-                              htmlFor="first-name">First Name</Label>
-                              <Input
-                                id="first-name"
-                                value={newService.First_Name}
-                                placeholder='Enter your first name'
-                                onChange={(e) =>
-                                  setNewService({ ...newService, First_Name: e.target.value })
-                                }
-                                />
-                            </div>
-                            <div className="space-y-2" >
-                              <Label
-                              className="text-sm font-medium text-gray-700"
-                              htmlFor="last-name">Last Name</Label>
-                              <Input
-                                id="last-name"
-                                value={newService.Last_Name}
-                                placeholder='Enter your last name'
-                                onChange={(e) =>
-                                  setNewService({ ...newService, Last_Name: e.target.value })
-                                }
-                                />
-                            </div>
-                            <div className="space-y-2" >
-                              <Label className="text-sm font-medium text-gray-700" htmlFor="branch-name">Branch</Label>
-                              <Select
-                                value={newService.branch}
-                                onValueChange={(value) => setNewService({ ...newService, branch: value })}
-                              >
-                                <SelectTrigger id="branch-name" className="w-full">
-                                  <SelectValue placeholder="Select branch name" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Downtown">Downtown</SelectItem>
-                                  <SelectItem value="Uptown">Uptown</SelectItem>
-                                  <SelectItem value="Airport">Airport</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="flex flex-col space-y-2 w-full">
-                              <Label
-                                 htmlFor="date-code"
-                                 className="text-sm font-medium text-gray-700"
-                               >
-                                 Date of Joining
-                              </Label>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto rounded-lg p-0">
+            <DialogHeader>
+              <DialogTitle>Create Staff</DialogTitle>
+              <CircleX
+                onClick={() => setIsAddDialogOpen(false)}
+                className="cursor-pointer"
+              />
+            </DialogHeader>
 
-                              <Datepicker
-                                id="date-code"
-                                selected={newService.Date ? new Date(newService.Date) : null}
-                                onChange={(date) =>
-                                setNewService({
-                                 ...newService,
-                                Date: date ? date.toISOString().split("T")[0] : "",
-                               })
-                              }
-                               placeholderText="DD-MM-YYYY"
-                               dateFormat="dd-MM-yyyy"
-                               className="w-full h-10 rounded-md border border-gray-300 px-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                              />
-                            </div>
+            <div className="space-y-6 p-6">
+              <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-2">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="first-name"
+                  >
+                    First Name
+                  </Label>
+                  <Input
+                    id="first-name"
+                    value={newService.First_Name}
+                    placeholder="Enter your first name"
+                    onChange={(e) =>
+                      setNewService({
+                        ...newService,
+                        First_Name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="last-name"
+                  >
+                    Last Name
+                  </Label>
+                  <Input
+                    id="last-name"
+                    value={newService.Last_Name}
+                    placeholder="Enter your last name"
+                    onChange={(e) =>
+                      setNewService({
+                        ...newService,
+                        Last_Name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="branch-name"
+                  >
+                    Branch
+                  </Label>
+                  <Select
+                    value={newService.branch}
+                    onValueChange={(value) =>
+                      setNewService({ ...newService, branch: value })
+                    }
+                  >
+                    <SelectTrigger id="branch-name" className="w-full">
+                      <SelectValue placeholder="Select branch name" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Downtown">Downtown</SelectItem>
+                      <SelectItem value="Uptown">Uptown</SelectItem>
+                      <SelectItem value="Airport">Airport</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col space-y-2 w-full">
+                  <Label
+                    htmlFor="date-code"
+                    className="text-sm font-medium text-gray-700"
+                  >
+                    Date of Joining
+                  </Label>
 
-                             <div className="flex flex-col space-y-2 w-full">
-                               <Label className="text-sm font-medium text-gray-700" htmlFor="Title-name">Job Title</Label>
-                               <Input
-                                  id="Title-name"
-                                  placeholder='Enter job title'
-                                  value={newService.Job_Title}
-                                  onChange={(e) => setNewService({ ...newService, Job_Title: e.target.value })}
-                                  className="w-full"
-                                />
-                              </div>
+                  <Datepicker
+                    id="date-code"
+                    selected={
+                      newService.Date ? new Date(newService.Date) : null
+                    }
+                    onChange={(date) =>
+                      setNewService({
+                        ...newService,
+                        Date: date ? date.toISOString().split('T')[0] : '',
+                      })
+                    }
+                    placeholderText="DD-MM-YYYY"
+                    dateFormat="dd-MM-yyyy"
+                    className="w-full h-10 rounded-md border border-gray-300 px-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
 
-                              <div className="flex flex-col space-y-2 w-full">
-                               <Label className="text-sm font-medium text-gray-700" htmlFor="role-name">Role</Label>
-                               <Select
-                                  value={newService.Job_Role}
-                                  onValueChange={(value) => setNewService({ ...newService, Job_Role: value })}
-                               >
-                                  <SelectTrigger id="role-name" className="w-full">
-                                    <SelectValue placeholder="Select role" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="Stylist">Stylist</SelectItem>
-                                    <SelectItem value="Manager">Manager</SelectItem>
-                                    <SelectItem value="Receptionist">Receptionist</SelectItem>
-                                  </SelectContent>
-                               </Select>
-                              </div>
-                              
-                          </div>
+                <div className="flex flex-col space-y-2 w-full">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="Title-name"
+                  >
+                    Job Title
+                  </Label>
+                  <Input
+                    id="Title-name"
+                    placeholder="Enter job title"
+                    value={newService.Job_Title}
+                    onChange={(e) =>
+                      setNewService({
+                        ...newService,
+                        Job_Title: e.target.value,
+                      })
+                    }
+                    className="w-full"
+                  />
+                </div>
 
-                          <div className="grid grid-cols-3 gap-2">
-                            <div className="flex flex-col space-y-2 w-full">
-                               <Label 
-                                 className="text-sm font-medium text-gray-700"
-                                 htmlFor="Branch-Manager"
-                                >
-                                 Email Address
-                                </Label>
-                               <Input
-                                  id="email-address"
-                                  placeholder='Enter Email Address'
-                                //   value={newService.Email_Address}
-                                //   onChange={(e) =>
-                                //   setNewService({ ...newService, Email_Address: e.target.value })
-                                // }
-                                className="w-full"
-                                />
-                              </div>
-                            <div className="flex flex-col space-y-2 w-full">
-                               <Label 
-                                 className="text-sm font-medium text-gray-700"
-                                 htmlFor="Branch-Manager"
-                                >
-                                 Password
-                                </Label>
-                               <Input
-                                  id="password"
-                                  placeholder='Enter new password'
-                                //   value={newService.Password}
-                                //   onChange={(e) =>
-                                //   setNewService({ ...newService, Password: e.target.value })
-                                // }
-                                className="w-full"
-                                />
-                            </div>
-                            <div className="flex flex-col space-y-2 w-full">
-                               <Label className="text-sm font-medium text-gray-700" htmlFor="contact-number">Contact Number</Label>
-                               <Input
-                                  id="contact-number"
-                                  placeholder='Enter contact number'
-                                  value={newService.contact}
-                                  onChange={(e) => setNewService({ ...newService, contact: e.target.value })}
-                                  className="w-full"
-                                />
-                            </div>
-                          </div>
+                <div className="flex flex-col space-y-2 w-full">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="role-name"
+                  >
+                    Role
+                  </Label>
+                  <Select
+                    value={newService.Job_Role}
+                    onValueChange={(value) =>
+                      setNewService({ ...newService, Job_Role: value })
+                    }
+                  >
+                    <SelectTrigger id="role-name" className="w-full">
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Stylist">Stylist</SelectItem>
+                      <SelectItem value="Manager">Manager</SelectItem>
+                      <SelectItem value="Receptionist">Receptionist</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
 
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="flex flex-col space-y-2 w-full">
-                               <Label className="text-sm font-medium text-gray-700" htmlFor="address">Address</Label>
-                               <Input
-                                  id="address"
-                                  placeholder='Enter Address'
-                                  value={newService.address}
-                                  onChange={(e) => setNewService({ ...newService, address: e.target.value })}
-                                  className="w-full"
-                                />
-                              </div>
-                            <div className="flex flex-col space-y-2 w-full">
-                               <Label className="text-sm font-medium text-gray-700" htmlFor="pin-code">Pin Code</Label>
-                               <Input
-                                  id="pin-code"
-                                  placeholder='Enter pin code'
-                                  value={newService.pin}
-                                  onChange={(e) => setNewService({ ...newService, pin: e.target.value })}
-                                  className="w-full"
-                                />
-                            </div>
-                          </div>
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="flex flex-col space-y-2 w-full">
-                               <Label className="text-sm font-medium text-gray-700" htmlFor="state">State</Label>
-                               <Input
-                                  id="state"
-                                  placeholder='Enter state'
-                                  value={newService.state}
-                                  onChange={(e) => setNewService({ ...newService, state: e.target.value })}
-                                  className="w-full"
-                               />
-                            </div>
-                            <div className="flex flex-col space-y-2 w-full">
-                               <Label className="text-sm font-medium text-gray-700" htmlFor="city">City</Label>
-                               <Input
-                                  id="city"
-                                  placeholder='Enter city'
-                                  value={newService.city}
-                                  onChange={(e) => setNewService({ ...newService, city: e.target.value })}
-                                  className="w-full"
-                               />
-                            </div>
-                          </div>
-                            
-                           <div className="main-container">
-                            <div className="w-full flex justify-end space-x-2 border-t-2 pt-4">
-                              <Button
-                                variant="outline"
-                                onClick={() => setIsAddDialogOpen(false)}
-                              >
-                                Cancel
-                              </Button>
-                              <Button 
-                              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
-                              onClick={handleSaveNew}>Save</Button>
-                            </div>
-                          </div>
-                        </div>
-                        </DialogContent>
-                      </Dialog>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="flex flex-col space-y-2 w-full">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="Branch-Manager"
+                  >
+                    Email Address
+                  </Label>
+                  <Input
+                    id="email-address"
+                    placeholder="Enter Email Address"
+                    //   value={newService.Email_Address}
+                    //   onChange={(e) =>
+                    //   setNewService({ ...newService, Email_Address: e.target.value })
+                    // }
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex flex-col space-y-2 w-full">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="Branch-Manager"
+                  >
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    placeholder="Enter new password"
+                    //   value={newService.Password}
+                    //   onChange={(e) =>
+                    //   setNewService({ ...newService, Password: e.target.value })
+                    // }
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex flex-col space-y-2 w-full">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="contact-number"
+                  >
+                    Contact Number
+                  </Label>
+                  <Input
+                    id="contact-number"
+                    placeholder="Enter contact number"
+                    value={newService.contact}
+                    onChange={(e) =>
+                      setNewService({ ...newService, contact: e.target.value })
+                    }
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col space-y-2 w-full">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="address"
+                  >
+                    Address
+                  </Label>
+                  <Input
+                    id="address"
+                    placeholder="Enter Address"
+                    value={newService.address}
+                    onChange={(e) =>
+                      setNewService({ ...newService, address: e.target.value })
+                    }
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex flex-col space-y-2 w-full">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="pin-code"
+                  >
+                    Pin Code
+                  </Label>
+                  <Input
+                    id="pin-code"
+                    placeholder="Enter pin code"
+                    value={newService.pin}
+                    onChange={(e) =>
+                      setNewService({ ...newService, pin: e.target.value })
+                    }
+                    className="w-full"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col space-y-2 w-full">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="state"
+                  >
+                    State
+                  </Label>
+                  <Input
+                    id="state"
+                    placeholder="Enter state"
+                    value={newService.state}
+                    onChange={(e) =>
+                      setNewService({ ...newService, state: e.target.value })
+                    }
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex flex-col space-y-2 w-full">
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="city"
+                  >
+                    City
+                  </Label>
+                  <Input
+                    id="city"
+                    placeholder="Enter city"
+                    value={newService.city}
+                    onChange={(e) =>
+                      setNewService({ ...newService, city: e.target.value })
+                    }
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
+              <div className="main-container">
+                <div className="w-full flex justify-end space-x-2 border-t-2 pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsAddDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
+                    onClick={handleSaveNew}
+                  >
+                    Save
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Edit Staff dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -694,36 +801,78 @@ export default function StaffSettingsTable() {
             <div className="space-y-6 p-6">
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700" htmlFor="edit-first-name">First Name</Label>
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="edit-first-name"
+                  >
+                    First Name
+                  </Label>
                   <Input
                     id="edit-first-name"
                     value={editingStaff?.First_Name ?? ''}
-                    onChange={(e) => setEditingStaff((prev: any) => ({ ...prev, First_Name: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        First_Name: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700" htmlFor="edit-last-name">Last Name</Label>
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="edit-last-name"
+                  >
+                    Last Name
+                  </Label>
                   <Input
                     id="edit-last-name"
                     value={editingStaff?.Last_Name ?? ''}
-                    onChange={(e) => setEditingStaff((prev: any) => ({ ...prev, Last_Name: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        Last_Name: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700" htmlFor="edit-branch">Branch</Label>
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="edit-branch"
+                  >
+                    Branch
+                  </Label>
                   <Input
                     id="edit-branch"
                     value={editingStaff?.branch ?? ''}
-                    onChange={(e) => setEditingStaff((prev: any) => ({ ...prev, branch: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        branch: e.target.value,
+                      }))
+                    }
                   />
                 </div>
 
                 <div className="flex flex-col space-y-2 w-full">
-                  <Label htmlFor="edit-date" className="text-sm font-medium text-gray-700">Date of Joining</Label>
+                  <Label
+                    htmlFor="edit-date"
+                    className="text-sm font-medium text-gray-700"
+                  >
+                    Date of Joining
+                  </Label>
                   <Datepicker
                     id="edit-date"
-                    selected={editingStaff?.Date ? new Date(editingStaff.Date) : null}
-                    onChange={(date) => setEditingStaff((prev: any) => ({ ...prev, Date: date ? date.toISOString().split('T')[0] : '' }))}
+                    selected={
+                      editingStaff?.Date ? new Date(editingStaff.Date) : null
+                    }
+                    onChange={(date) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        Date: date ? date.toISOString().split('T')[0] : '',
+                      }))
+                    }
                     placeholderText="DD-MM-YYYY"
                     dateFormat="dd-MM-yyyy"
                     className="w-full h-10 rounded-md border border-gray-300 px-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -731,21 +880,41 @@ export default function StaffSettingsTable() {
                 </div>
 
                 <div className="flex flex-col space-y-2 w-full">
-                  <Label className="text-sm font-medium text-gray-700" htmlFor="edit-title">Job Title</Label>
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="edit-title"
+                  >
+                    Job Title
+                  </Label>
                   <Input
                     id="edit-title"
                     value={editingStaff?.Job_Title ?? ''}
-                    onChange={(e) => setEditingStaff((prev: any) => ({ ...prev, Job_Title: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        Job_Title: e.target.value,
+                      }))
+                    }
                     className="w-full"
                   />
                 </div>
 
                 <div className="flex flex-col space-y-2 w-full">
-                  <Label className="text-sm font-medium text-gray-700" htmlFor="edit-role">Role</Label>
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="edit-role"
+                  >
+                    Role
+                  </Label>
                   <Input
                     id="edit-role"
                     value={editingStaff?.Job_Role ?? ''}
-                    onChange={(e) => setEditingStaff((prev: any) => ({ ...prev, Job_Role: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        Job_Role: e.target.value,
+                      }))
+                    }
                     className="w-full"
                   />
                 </div>
@@ -753,11 +922,21 @@ export default function StaffSettingsTable() {
 
               <div className="grid grid-cols-3 gap-2">
                 <div className="flex flex-col space-y-2 w-full">
-                  <Label className="text-sm font-medium text-gray-700" htmlFor="edit-contact">Contact Number</Label>
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="edit-contact"
+                  >
+                    Contact Number
+                  </Label>
                   <Input
                     id="edit-contact"
                     value={editingStaff?.contact ?? ''}
-                    onChange={(e) => setEditingStaff((prev: any) => ({ ...prev, contact: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        contact: e.target.value,
+                      }))
+                    }
                     className="w-full"
                   />
                 </div>
@@ -765,21 +944,41 @@ export default function StaffSettingsTable() {
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="flex flex-col space-y-2 w-full">
-                  <Label className="text-sm font-medium text-gray-700" htmlFor="edit-address">Address</Label>
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="edit-address"
+                  >
+                    Address
+                  </Label>
                   <Input
                     id="edit-address"
                     value={editingStaff?.address ?? ''}
-                    onChange={(e) => setEditingStaff((prev: any) => ({ ...prev, address: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        address: e.target.value,
+                      }))
+                    }
                     className="w-full"
                     placeholder="Enter Address"
                   />
                 </div>
                 <div className="flex flex-col space-y-2 w-full">
-                  <Label className="text-sm font-medium text-gray-700" htmlFor="edit-pin">Pin Code</Label>
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="edit-pin"
+                  >
+                    Pin Code
+                  </Label>
                   <Input
                     id="edit-pin"
                     value={editingStaff?.pin ?? ''}
-                    onChange={(e) => setEditingStaff((prev: any) => ({ ...prev, pin: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        pin: e.target.value,
+                      }))
+                    }
                     className="w-full"
                     placeholder="Enter pin code"
                   />
@@ -788,21 +987,41 @@ export default function StaffSettingsTable() {
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="flex flex-col space-y-2 w-full">
-                  <Label className="text-sm font-medium text-gray-700" htmlFor="edit-state">State</Label>
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="edit-state"
+                  >
+                    State
+                  </Label>
                   <Input
                     id="edit-state"
                     value={editingStaff?.state ?? ''}
-                    onChange={(e) => setEditingStaff((prev: any) => ({ ...prev, state: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        state: e.target.value,
+                      }))
+                    }
                     className="w-full"
                     placeholder="Enter state"
                   />
                 </div>
                 <div className="flex flex-col space-y-2 w-full">
-                  <Label className="text-sm font-medium text-gray-700" htmlFor="edit-city">City</Label>
+                  <Label
+                    className="text-sm font-medium text-gray-700"
+                    htmlFor="edit-city"
+                  >
+                    City
+                  </Label>
                   <Input
                     id="edit-city"
                     value={editingStaff?.city ?? ''}
-                    onChange={(e) => setEditingStaff((prev: any) => ({ ...prev, city: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingStaff((prev: any) => ({
+                        ...prev,
+                        city: e.target.value,
+                      }))
+                    }
                     className="w-full"
                     placeholder="Enter city"
                   />
@@ -812,14 +1031,23 @@ export default function StaffSettingsTable() {
               {/* Footer with Cancel / Save buttons for update */}
               <div className="main-container">
                 <div className="w-full flex justify-end space-x-2 border-t-2 pt-4">
-                  <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2" onClick={handleUpdateSave}>Save Changes</Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsEditDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
+                    onClick={handleUpdateSave}
+                  >
+                    Save Changes
+                  </Button>
                 </div>
               </div>
             </div>
           </DialogContent>
         </Dialog>
-
       </CardContent>
     </Card>
   );
