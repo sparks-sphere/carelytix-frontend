@@ -367,7 +367,7 @@ export default function BranchSettingsTable() {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Salons</SelectLabel>
-                        {salons.map((salon) => (
+                        {(salons ?? []).map((salon) => (
                           <SelectItem key={salon.id} value={salon.id}>
                             {salon.id?.split('-')[0]}... | {salon.name}
                           </SelectItem>
@@ -526,7 +526,7 @@ export default function BranchSettingsTable() {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Salons</SelectLabel>
-                          {salons.map((salon) => (
+                          {(salons ?? []).map((salon) => (
                             <SelectItem key={salon.id} value={salon.id}>
                               {salon.id?.split('-')[0]}... | {salon.name}
                             </SelectItem>
