@@ -169,12 +169,12 @@ export default function SalonSettingsTable() {
         </div>
       )} */}
 
-      {loading && salons.length === 0 ? (
+      {loading && (salons?.length ?? 0) === 0 ? (
         <div className="text-center py-12">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
           <p className="text-gray-500">Loading salons...</p>
         </div>
-      ) : salons.length === 0 ? (
+      ) : (salons?.length ?? 0) === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">No salon created</p>
           <p className="text-gray-400 text-sm mt-2">
@@ -183,7 +183,7 @@ export default function SalonSettingsTable() {
         </div>
       ) : (
         <div className="space-y-6">
-          {salons.map((salon: any) => (
+          {(salons ?? []).map((salon: any) => (
             <div
               key={salon.id}
               className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start border-b pb-6"
