@@ -24,9 +24,19 @@ import { PayloadAction } from '@reduxjs/toolkit';
 function* handleFetchSalons(): Generator<any, void, any> {
   try {
     const response: AxiosResponse<ApiResponse> = yield call(() =>
-      AxiosInstance.get<ApiResponse>('/user/salon/get-all-salons'),
+      AxiosInstance.get<ApiResponse>('/salon/get-all-salons'),
     );
-    yield put(fetchSalonsSuccess(response.data.data.salons));
+    const data = response?.data?.data as any;
+    const list = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.salons)
+      ? data.salons
+      : Array.isArray(data?.data)
+      ? data.data
+      : data?.salon
+      ? [data.salon]
+      : [];
+    yield put(fetchSalonsSuccess(list));
   } catch (error: any) {
     console.log('error', error);
     const axiosError = error as AxiosError<ApiResponse>;
@@ -44,10 +54,15 @@ function* handleFetchSalonById(
   const { id } = action.payload;
   try {
     const response: AxiosResponse<ApiResponse> = yield call(() =>
-      AxiosInstance.get<ApiResponse>(`/user/salon/get-salon/${id}`),
+      AxiosInstance.get<ApiResponse>(`/salon/get-salon/${id}`),
     );
-
-    yield put(fetchSalonByIdSuccess(response.data.data.salons));
+    const data = response?.data?.data as any;
+    const listOrItem = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.salons)
+      ? data.salons
+      : data?.salon ?? data ?? null;
+    yield put(fetchSalonByIdSuccess(listOrItem));
   } catch (error) {
     const axiosError = error as AxiosError<ApiResponse>;
     const errorMessage =
@@ -63,10 +78,40 @@ function* handleCreateSalon(
 ): Generator<any, void, any> {
   const { data } = action.payload;
   try {
+    // Send multiple alias fields to maximize backend compatibility
+    const normalizedDate = typeof data?.dateOfEstablishment === 'string' && data.dateOfEstablishment.includes('T')
+      ? data.dateOfEstablishment.split('T')[0]
+      : data?.dateOfEstablishment;
+    const payloadToSend = {
+      ...data,
+      // name aliases
+      salonName: data?.name ?? data?.salonName,
+      // email aliases
+      // email: data?.email ?? data?.emailAddress ?? data?.email_address,
+      // emailAddress: data?.email ?? data?.emailAddress ?? data?.email_address,
+      // email_address: data?.email ?? data?.emailAddress ?? data?.email_address,
+      address: data?.address,
+      // contact aliases
+      // contactNumber: data?.contactNumber ?? data?.contact ?? data?.phone ?? data?.mobile,
+      // contact_number: data?.contactNumber ?? data?.contact ?? data?.phone ?? data?.mobile,
+      // Contact_Number: data?.contactNumber ?? data?.contact ?? data?.phone ?? data?.mobile,
+      // contact: data?.contactNumber ?? data?.contact ?? data?.phone ?? data?.mobile,
+      // phone: data?.contactNumber ?? data?.contact ?? data?.phone ?? data?.mobile,
+      // mobile: data?.contactNumber ?? data?.contact ?? data?.phone ?? data?.mobile,
+      contactNo: data?.contactNo,
+      // date aliases
+      dateOfEstablishment: normalizedDate ?? data?.establishedOn ?? data?.date,
+      establishedOn: normalizedDate ?? data?.establishedOn ?? data?.date,
+      date: normalizedDate ?? data?.establishedOn ?? data?.date,
+    };
     const response: AxiosResponse<ApiResponse> = yield call(() =>
-      AxiosInstance.post<ApiResponse>('/user/salon/create-salon', data),
+      AxiosInstance.post<ApiResponse>('/salon/create-salon', payloadToSend),
     );
-    yield put(createSalonSuccess(response.data.data));
+    const resData = response?.data?.data as any;
+    const created = resData?.salon ?? resData?.data ?? resData ?? null;
+    yield put(createSalonSuccess(created));
+    // Ensure UI reflects the latest server data
+    yield put(fetchSalons());
   } catch (error) {
     const axiosError = error as AxiosError<ApiResponse>;
     const errorMessage =
@@ -82,10 +127,26 @@ function* handleUpdateSalon(
 ): Generator<any, void, any> {
   const { id, data } = action.payload;
   try {
+    const normalizedDate = typeof data?.dateOfEstablishment === 'string' && data.dateOfEstablishment.includes('T')
+      ? data.dateOfEstablishment.split('T')[0]
+      : data?.dateOfEstablishment;
+    const payloadToSend = {
+      ...data,
+      salonName: data?.name ?? data?.salonName,
+      address: data?.address,
+      contactNo: data?.contactNo ?? data?.contactNumber ?? data?.contact ?? data?.phone ?? data?.mobile,
+      dateOfEstablishment: normalizedDate ?? data?.establishedOn ?? data?.date,
+      establishedOn: normalizedDate ?? data?.establishedOn ?? data?.date,
+      date: normalizedDate ?? data?.establishedOn ?? data?.date,
+    };
     const response: AxiosResponse<ApiResponse> = yield call(() =>
-      AxiosInstance.patch<ApiResponse>(`/user/salon/update-salon/${id}`, data),
+      AxiosInstance.put<ApiResponse>(`/salon/update-salon/${id}`, payloadToSend),
     );
-    yield put(updateSalonSuccess(response.data.data));
+    const resData = response?.data?.data as any;
+    const updated = resData?.salon ?? resData?.data ?? resData ?? null;
+    yield put(updateSalonSuccess(updated));
+    // Refresh list after update
+    yield put(fetchSalons());
   } catch (error) {
     const axiosError = error as AxiosError<ApiResponse>;
     const errorMessage =
@@ -101,9 +162,13 @@ function* handleDeleteSalon(
   const { id } = action.payload;
   try {
     const response: AxiosResponse<ApiResponse> = yield call(() =>
-      AxiosInstance.delete<ApiResponse>(`/user/salon/delete-salon/${id}`),
+      AxiosInstance.delete<ApiResponse>(`/salon/delete-salon/${id}`),
     );
-    yield put(deleteSalonSuccess(response.data.data));
+    const resData = response?.data?.data as any;
+    const deleted = resData?.salon ?? resData?.data ?? resData ?? { id };
+    yield put(deleteSalonSuccess(deleted));
+    // Refresh list after delete
+    yield put(fetchSalons());
   } catch (error) {
     const axiosError = error as AxiosError<ApiResponse>;
     const errorMessage =

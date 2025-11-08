@@ -14,11 +14,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Loader2 } from 'lucide-react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-import { RootState } from '@/state/store';
+import { RootState, AppDispatch } from '@/state/store';
 import {
   fetchSalons,
   createSalon,
   deleteSalon,
+  updateSalon,
 } from '@/state/salon/salon-slice';
 
 interface Salon {
@@ -30,7 +31,7 @@ interface Salon {
 }
 
 export default function SalonSettingsTable() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { salons, loading, error } = useSelector(
     (state: RootState) => state.salon,
   );
@@ -39,6 +40,12 @@ export default function SalonSettingsTable() {
   const [salonEmail, setSalonEmail] = useState('');
   const [salonContact, setSalonContact] = useState('');
   const [salonDate, setSalonDate] = useState('');
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editSalonId, setEditSalonId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editContact, setEditContact] = useState('');
+  const [editDate, setEditDate] = useState('');
 
   useEffect(() => {
     dispatch(fetchSalons());
@@ -68,6 +75,34 @@ export default function SalonSettingsTable() {
     if (window.confirm('Are you sure you want to delete this salon?')) {
       dispatch(deleteSalon({ id }));
     }
+  };
+
+  const openEditDialog = (salon: any) => {
+    const id = salon?.id ?? salon?._id ?? salon?.salonId ?? salon?.SalonId ?? salon?.uuid;
+    const name = salon?.name ?? salon?.salonName ?? '';
+    const email = salon?.email ?? salon?.emailAddress ?? salon?.mail ?? salon?.Email_Address ?? salon?.email_address ?? '';
+    const contact = salon?.contactNumber ?? salon?.contact ?? salon?.phone ?? salon?.mobile ?? salon?.contact_number ?? salon?.Contact_Number ?? '';
+    const rawDate = salon?.dateOfEstablishment ?? salon?.establishedOn ?? salon?.date ?? '';
+    const date = typeof rawDate === 'string' && rawDate.includes('T') ? rawDate.split('T')[0] : rawDate || '';
+
+    setEditSalonId(id ?? null);
+    setEditName(name);
+    setEditEmail(email);
+    setEditContact(contact);
+    setEditDate(date);
+    setIsEditOpen(true);
+  };
+
+  const handleUpdateSalon = () => {
+    if (!editSalonId) return;
+    const data = {
+      name: editName.trim(),
+      email: editEmail.trim(),
+      contactNumber: editContact.trim(),
+      dateOfEstablishment: editDate,
+    };
+    dispatch(updateSalon({ id: editSalonId, data }));
+    setIsEditOpen(false);
   };
 
   return (
@@ -169,12 +204,12 @@ export default function SalonSettingsTable() {
         </div>
       )} */}
 
-      {loading && (salons?.length ?? 0) === 0 ? (
+      {loading && salons.length === 0 ? (
         <div className="text-center py-12">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
           <p className="text-gray-500">Loading salons...</p>
         </div>
-      ) : (salons?.length ?? 0) === 0 ? (
+      ) : salons.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">No salon created</p>
           <p className="text-gray-400 text-sm mt-2">
@@ -183,7 +218,7 @@ export default function SalonSettingsTable() {
         </div>
       ) : (
         <div className="space-y-6">
-          {(salons ?? []).map((salon: any) => (
+          {(salons as Salon[]).map((salon) => (
             <div
               key={salon.id}
               className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start border-b pb-6"
@@ -196,7 +231,7 @@ export default function SalonSettingsTable() {
                 />
 
                 <div className="absolute -top-2 -right-2 flex space-x-1">
-                  <button className="w-8 h-8 rounded-full bg-white border border-gray-300 shadow-md flex items-center justify-center hover:shadow-lg hover:bg-gray-50 transition-all">
+                  <button onClick={() => openEditDialog(salon)} className="w-8 h-8 rounded-full bg-white border border-gray-300 shadow-md flex items-center justify-center hover:shadow-lg hover:bg-gray-50 transition-all">
                     <FiEdit2 className="text-purple-600 text-xs" />
                   </button>
                   <button
@@ -216,17 +251,6 @@ export default function SalonSettingsTable() {
               <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-7">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Salon Id
-                  </label>
-                  <input
-                    type="text"
-                    value={salon.id}
-                    readOnly
-                    className="w-full border rounded px-3 py-2 bg-gray-50 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Salon Name
                   </label>
                   <input
@@ -243,7 +267,14 @@ export default function SalonSettingsTable() {
                   </label>
                   <input
                     type="text"
-                    value={salon.email || ''}
+                    value={
+                      salon.email ||
+                      (salon as any).emailAddress ||
+                      (salon as any).email_address ||
+                      (salon as any).mail ||
+                      (salon as any).Email_Address ||
+                      ''
+                    }
                     readOnly
                     className="w-full border rounded px-3 py-2 bg-gray-50 focus:outline-none"
                   />
@@ -255,7 +286,16 @@ export default function SalonSettingsTable() {
                   </label>
                   <input
                     type="date"
-                    value={salon.dateOfEstablishment || ''}
+                    value={(() => {
+                      const raw =
+                        salon.dateOfEstablishment ||
+                        (salon as any).establishedOn ||
+                        (salon as any).date ||
+                        '';
+                      return typeof raw === 'string' && raw.includes('T')
+                        ? raw.split('T')[0]
+                        : raw;
+                    })()}
                     readOnly
                     className="w-full border rounded px-3 py-2 bg-gray-50 focus:outline-none"
                   />
@@ -267,7 +307,15 @@ export default function SalonSettingsTable() {
                   </label>
                   <input
                     type="text"
-                    value={salon.contactNumber || ''}
+                    value={
+                      salon.contactNumber ||
+                      (salon as any).contact ||
+                      (salon as any).phone ||
+                      (salon as any).mobile ||
+                      (salon as any).contact_number ||
+                      (salon as any).Contact_Number ||
+                      ''
+                    }
                     readOnly
                     className="w-full border rounded px-3 py-2 bg-gray-50 focus:outline-none"
                   />
@@ -277,6 +325,81 @@ export default function SalonSettingsTable() {
           ))}
         </div>
       )}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Salon</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="edit-name">Salon Name</Label>
+              <Input
+                id="edit-name"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Enter salon name"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-email">Email Address</Label>
+              <Input
+                id="edit-email"
+                type="email"
+                value={editEmail}
+                onChange={(e) => setEditEmail(e.target.value)}
+                placeholder="Enter email address"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-contact">Contact Number</Label>
+              <Input
+                id="edit-contact"
+                value={editContact}
+                onChange={(e) => setEditContact(e.target.value)}
+                placeholder="Enter contact number"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-date">Date of Establishment</Label>
+              <Input
+                id="edit-date"
+                type="date"
+                value={editDate}
+                onChange={(e) => setEditDate(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsEditOpen(false);
+                  setEditSalonId(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleUpdateSalon}
+                className="bg-purple-600 hover:bg-purple-700"
+                disabled={!editName.trim() || loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin  text-purple-600" />
+                    Saving...
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

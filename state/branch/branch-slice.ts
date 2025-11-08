@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { create } from 'node:domain';
 
 interface BranchState {
   branches: Record<string, any>[];
@@ -24,7 +23,14 @@ const branchSlice = createSlice({
       state.error = null;
     },
     fetchBranchesSuccess: (state, action) => {
-      state.branches = action.payload;
+      const list = Array.isArray(action.payload) ? action.payload : [];
+      state.branches = list.map((b: any) => ({
+        ...b,
+        id: b?.id ?? b?._id ?? b?.branchId ?? b?.BranchId ?? b?.uuid,
+        name: b?.name ?? b?.branchName ?? b?.title ?? '',
+        branchCode: b?.branchCode ?? b?.code ?? '',
+        contactNo: b?.contactNo ?? b?.contact ?? b?.phone ?? b?.mobile ?? '',
+      }));
       state.loading = false;
       state.error = null;
     },
@@ -37,7 +43,15 @@ const branchSlice = createSlice({
       state.error = null;
     },
     fetchBranchByIdSuccess: (state, action) => {
-      state.branches = action.payload;
+      const payload = action.payload;
+      const arr = Array.isArray(payload) ? payload : payload ? [payload] : [];
+      state.branches = arr.map((b: any) => ({
+        ...b,
+        id: b?.id ?? b?._id ?? b?.branchId ?? b?.BranchId ?? b?.uuid,
+        name: b?.name ?? b?.branchName ?? b?.title ?? '',
+        branchCode: b?.branchCode ?? b?.code ?? '',
+        contactNo: b?.contactNo ?? b?.contact ?? b?.phone ?? b?.mobile ?? '',
+      }));
       state.loading = false;
       state.error = null;
     },
@@ -51,7 +65,15 @@ const branchSlice = createSlice({
       state.error = null;
     },
     createBranchSuccess: (state, action) => {
-      state.branches.push(action.payload);
+      const b = action.payload ?? {};
+      const normalized = {
+        ...b,
+        id: b?.id ?? b?._id ?? b?.branchId ?? b?.BranchId ?? b?.uuid,
+        name: b?.name ?? b?.branchName ?? b?.title ?? '',
+        branchCode: b?.branchCode ?? b?.code ?? '',
+        contactNo: b?.contactNo ?? b?.contact ?? b?.phone ?? b?.mobile ?? '',
+      };
+      state.branches = [normalized, ...state.branches];
       state.loading = false;
       state.error = null;
     },
@@ -65,9 +87,16 @@ const branchSlice = createSlice({
       state.error = null;
     },
     updateBranchSuccess: (state, action) => {
-      const updatedBranch = action.payload;
+      const b = action.payload ?? {};
+      const updated = {
+        ...b,
+        id: b?.id ?? b?._id ?? b?.branchId ?? b?.BranchId ?? b?.uuid,
+        name: b?.name ?? b?.branchName ?? b?.title ?? '',
+        branchCode: b?.branchCode ?? b?.code ?? '',
+        contactNo: b?.contactNo ?? b?.contact ?? b?.phone ?? b?.mobile ?? '',
+      };
       state.branches = state.branches.map((branch) =>
-        branch.id === updatedBranch.id ? updatedBranch : branch,
+        branch.id === updated.id ? updated : branch,
       );
       state.loading = false;
       state.error = null;
@@ -82,10 +111,9 @@ const branchSlice = createSlice({
       state.error = null;
     },
     deleteBranchSuccess: (state, action) => {
-      const deletedBranch = action.payload;
-      state.branches = state.branches.filter(
-        (branch) => branch.id !== deletedBranch.id,
-      );
+      const deleted = action.payload ?? {};
+      const id = deleted?.id ?? deleted?._id ?? deleted?.branchId ?? deleted?.BranchId ?? deleted?.uuid;
+      state.branches = state.branches.filter((branch) => branch.id !== id);
       state.loading = false;
       state.error = null;
     },

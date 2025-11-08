@@ -32,6 +32,7 @@ import {
   updateBranch,
   deleteBranch,
 } from '@/state/branch/branch-slice';
+import { fetchSalons } from '@/state/salon/salon-slice';
 import {
   Select,
   SelectContent,
@@ -74,6 +75,7 @@ export default function BranchSettingsTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(2);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedSalonId, setSelectedSalonId] = useState<string>('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
@@ -88,12 +90,29 @@ export default function BranchSettingsTable() {
     saloonId: '',
   });
 
-  // Fetch branches on component mount
+  // Ensure salons list is loaded on this screen
   useEffect(() => {
-    dispatch(fetchBranches());
+    if (!Array.isArray(salons) || salons.length === 0) {
+      dispatch(fetchSalons());
+    }
   }, [dispatch]);
 
+  // Default selected salon and refetch on selection
+  useEffect(() => {
+    if (!selectedSalonId && Array.isArray(salons) && salons.length > 0) {
+      setSelectedSalonId(salons[0].id);
+    }
+  }, [salons, selectedSalonId]);
+
+  useEffect(() => {
+    if (selectedSalonId) {
+      dispatch(fetchBranches({ saloonId: selectedSalonId } as any));
+    }
+  }, [dispatch, selectedSalonId]);
+
   const handleAdd = () => {
+    // preselect current salon in the dialog
+    setNewBranch((prev) => ({ ...prev, saloonId: selectedSalonId || prev.saloonId }));
     setIsAddDialogOpen(true);
   };
 
@@ -103,11 +122,15 @@ export default function BranchSettingsTable() {
   };
 
   const handleDelete = (id: string) => {
-    dispatch(deleteBranch({ id }));
+    dispatch(deleteBranch({ id, saloonId: selectedSalonId } as any));
   };
 
   const handleSaveNew = () => {
-    dispatch(createBranch({ data: newBranch }));
+    const payload = {
+      ...newBranch,
+      saloonId: newBranch.saloonId || selectedSalonId,
+    };
+    dispatch(createBranch({ data: payload }));
     setNewBranch({
       branchCode: '',
       name: '',
@@ -117,6 +140,9 @@ export default function BranchSettingsTable() {
       contactNo: '',
       saloonId: '',
     });
+    // Ensure the newly added branch is visible
+    setSearchTerm('');
+    setCurrentPage(1);
     setIsAddDialogOpen(false);
   };
 
@@ -172,7 +198,30 @@ export default function BranchSettingsTable() {
         <div className="flex flex-col mb-6">
           <h3 className="text-xl font-semibold text-gray-900">Branch</h3>
           <div className="flex items-center justify-between gap-4 mt-2">
-            <div className="relative w-80">
+            <div className="flex items-center gap-4">
+              <Select
+                value={selectedSalonId}
+                onValueChange={(value) => {
+                  setSelectedSalonId(value);
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="w-56 h-9 border-gray-300">
+                  <SelectValue placeholder="Filter by salon" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Salons</SelectLabel>
+                    {salons.map((salon) => (
+                      <SelectItem key={salon.id} value={salon.id}>
+                        {salon.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              <div className="relative w-80">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-500 w-4 h-4" />
               <Input
                 className="bg-purple-50 border-purple-200 pl-10 focus-visible:ring-purple-500"
@@ -183,6 +232,7 @@ export default function BranchSettingsTable() {
                   setCurrentPage(1);
                 }}
               />
+              </div>
             </div>
             <Button
               onClick={handleAdd}
@@ -353,7 +403,7 @@ export default function BranchSettingsTable() {
                     className="text-sm font-medium text-gray-700"
                     htmlFor="salon-id"
                   >
-                    Salon ID *
+                    Salon *
                   </Label>
                   <Select
                     value={newBranch.saloonId}
@@ -367,9 +417,9 @@ export default function BranchSettingsTable() {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Salons</SelectLabel>
-                        {(salons ?? []).map((salon) => (
+                        {salons.map((salon) => (
                           <SelectItem key={salon.id} value={salon.id}>
-                            {salon.id?.split('-')[0]}... | {salon.name}
+                            {salon.name}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -485,7 +535,8 @@ export default function BranchSettingsTable() {
                 <Button
                   className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 disabled:opacity-50"
                   onClick={handleSaveNew}
-                  disabled={loading}
+                  // Do not disable on global loading to allow create while fetching
+                  disabled={false}
                 >
                   {loading ? 'Saving...' : 'Save'}
                 </Button>
@@ -512,10 +563,10 @@ export default function BranchSettingsTable() {
                       className="text-sm font-medium text-gray-700"
                       htmlFor="edit-salon-id"
                     >
-                      Salon ID *
+                      Salon *
                     </Label>
                     <Select
-                      value={newBranch.saloonId}
+                      value={editingBranch.saloonId}
                       onValueChange={(value) =>
                         setEditingBranch({ ...editingBranch, saloonId: value })
                       }
@@ -526,9 +577,9 @@ export default function BranchSettingsTable() {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Salons</SelectLabel>
-                          {(salons ?? []).map((salon) => (
+                          {salons.map((salon) => (
                             <SelectItem key={salon.id} value={salon.id}>
-                              {salon.id?.split('-')[0]}... | {salon.name}
+                              {salon.name}
                             </SelectItem>
                           ))}
                         </SelectGroup>
